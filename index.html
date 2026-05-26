@@ -18,6 +18,9 @@
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   /* Stars background */
@@ -31,6 +34,41 @@
     animation: twinkle var(--d) ease-in-out infinite alternate;
   }
   @keyframes twinkle { from { opacity: 0.1; } to { opacity: 0.9; } }
+
+  /* DAY MODE */
+  body.day {
+    background: radial-gradient(ellipse at 50% 0%, #87ceeb 0%, #b0e0ff 40%, #d4f0ff 100%);
+  }
+  body.day .shelf {
+    background: linear-gradient(to bottom, #4a7a2a 0%, #2a5a10 100%);
+    border-top-color: #5a9a3a;
+  }
+  body.day .shelf::before { background: linear-gradient(90deg, transparent, #7aba5a, transparent); box-shadow: 0 0 20px #4a8a2a; }
+  body.day .star { display: none; }
+  body.day .ground-glow { background: radial-gradient(ellipse, rgba(255,220,80,0.2) 0%, transparent 70%); }
+  body.day .mood-label { color: rgba(10,30,80,0.6); }
+  body.day .hint { color: rgba(10,30,80,0.4); }
+
+  /* Toggle day/night button */
+  .toggle-btn {
+    position: fixed;
+    top: 16px; right: 16px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: white;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: background 0.3s, transform 0.2s;
+    backdrop-filter: blur(6px);
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+  .toggle-btn:active { transform: scale(0.88); }
+  body.day .toggle-btn { background: rgba(0,0,0,0.1); border-color: rgba(0,0,0,0.15); color: #1a1a2e; }
 
   /* Floor / shelf */
   .shelf {
@@ -106,6 +144,8 @@
     justify-content: center;
     cursor: pointer;
     transition: transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
   }
 
   /* 3D container */
@@ -135,7 +175,6 @@
     animation: bodyBob 3s ease-in-out infinite;
     transition: all 0.3s;
   }
-  /* Body highlight */
   .body::before {
     content: '';
     position: absolute;
@@ -145,7 +184,6 @@
     border-radius: 50%;
     transform: rotate(-20deg);
   }
-  /* Body side shadow for 3D */
   .body::after {
     content: '';
     position: absolute;
@@ -374,6 +412,33 @@
     50% { transform: rotate(-12deg); }
   }
 
+  /* DEPRESSED (ignored too long) */
+  .bloo-wrap.depressed .body { background: radial-gradient(ellipse at 35% 30%, #4466aa, #2a4488 35%, #182060 65%, #0a1030 100%); }
+  .bloo-wrap.depressed .eyelid { height: 55%; }
+  .bloo-wrap.depressed .mouth { border-radius: 50%; bottom: 10px; transform: translateX(-50%) scaleY(-1); width: 20px; height: 20px; }
+  .bloo-wrap.depressed .bloo-3d { animation: depress 3s ease-in-out infinite; }
+  @keyframes depress {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(4px) rotate(-3deg); }
+  }
+  .bloo-wrap.depressed .hand { transform: translateY(6px); opacity: 0.6; }
+  .bloo-wrap.depressed .hand.right { transform: translateY(6px) scaleX(-1); }
+
+  /* WALKING state */
+  .bloo-wrap.walking .foot.left { animation: walkL 0.5s ease-in-out infinite alternate; }
+  .bloo-wrap.walking .foot.right { animation: walkR 0.5s ease-in-out infinite alternate; }
+  @keyframes walkL { from { transform: translateX(-4px) rotate(-10deg); } to { transform: translateX(2px) rotate(10deg); } }
+  @keyframes walkR { from { transform: translateX(4px) rotate(10deg); } to { transform: translateX(-2px) rotate(-10deg); } }
+  .bloo-wrap.walking .hand.left { animation: armSwingL 0.5s ease-in-out infinite alternate; }
+  .bloo-wrap.walking .hand.right { animation: armSwingR 0.5s ease-in-out infinite alternate; }
+  @keyframes armSwingL { from { transform: rotate(-25deg); } to { transform: rotate(10deg); } }
+  @keyframes armSwingR { from { transform: scaleX(-1) rotate(10deg); } to { transform: scaleX(-1) rotate(-25deg); } }
+  .bloo-wrap.walking .bloo-3d { animation: walkBob 0.5s ease-in-out infinite alternate; }
+  @keyframes walkBob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-4px); }
+  }
+
   /* Tap ripple */
   .ripple {
     position: fixed;
@@ -425,6 +490,74 @@
     pointer-events: none;
     transition: opacity 0.4s;
   }
+
+  /* ===== CRITTERS ===== */
+  .critter {
+    position: fixed;
+    pointer-events: all;
+    cursor: pointer;
+    z-index: 8;
+    transition: transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .critter:active { transform: scale(0.85); }
+
+  /* Critter bubble (small note near critter) */
+  .critter-bubble {
+    position: fixed;
+    background: rgba(255,255,255,0.95);
+    color: #1a1a2e;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.6) translateY(6px);
+    transition: opacity 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .critter-bubble.show { opacity: 1; transform: scale(1) translateY(0); }
+  .critter-bubble::after {
+    content: '';
+    position: absolute; bottom: -6px; left: 14px;
+    border: 6px solid transparent;
+    border-top-color: rgba(255,255,255,0.95);
+    border-bottom: none;
+  }
+  
+  /* Depressed note above Bloo */
+  .depressed-note {
+    position: absolute;
+    top: -55px; left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: #fff8dc;
+    color: #555;
+    padding: 8px 14px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 25;
+    pointer-events: none;
+    border: 1.5px solid #e8e0a0;
+  }
+  .depressed-note.show { transform: translateX(-50%) scale(1); }
+  .depressed-note::after {
+    content: '';
+    position: absolute; bottom: -8px; left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #e8e0a0;
+    border-bottom: none;
+  }
 </style>
 </head>
 <body>
@@ -435,8 +568,11 @@
 
 <div class="mood-label" id="moodLabel">· · ·</div>
 
+<button class="toggle-btn" id="toggleBtn" aria-label="Toggle day/night">🌙</button>
+
 <div class="scene">
   <div class="bubble" id="bubble">Hello!</div>
+  <div class="depressed-note" id="depressedNote">ازم خسته شدی؟ 🥺</div>
 
   <div class="bloo-wrap" id="bloo">
     <div class="shadow"></div>
@@ -470,7 +606,7 @@
 <div class="hint">tap · drag · touch bloo</div>
 
 <script>
-// --- Stars ---
+// ===================== STARS =====================
 const starsEl = document.getElementById('stars');
 for (let i = 0; i < 60; i++) {
   const s = document.createElement('div');
@@ -479,50 +615,80 @@ for (let i = 0; i < 60; i++) {
   starsEl.appendChild(s);
 }
 
-// --- State ---
+// ===================== STATE =====================
 const bloo = document.getElementById('bloo');
 const bubble = document.getElementById('bubble');
 const moodLabel = document.getElementById('moodLabel');
+const depressedNote = document.getElementById('depressedNote');
 const pupils = document.querySelectorAll('.pupil');
+const toggleBtn = document.getElementById('toggleBtn');
 
 let currentMood = 'idle';
 let bubbleTimer = null;
 let moodTimer = null;
-let lastTapZone = null;
 let petStreak = 0;
-let tapCount = 0;
+let isDay = false;
+let isPointerOnScreen = false;
+let lastInteraction = Date.now();
+let depressedTimer = null;
+let walkTimer = null;
+let walkingScene = null; // the scene moving X
+let walkDir = 1;
+let walkX = 0;
+let currentWatchTarget = null; // critter being watched
 
-// --- Mood system ---
+// ===================== DAY/NIGHT TOGGLE =====================
+toggleBtn.addEventListener('click', () => {
+  isDay = !isDay;
+  document.body.classList.toggle('day', isDay);
+  toggleBtn.textContent = isDay ? '🌙' : '☀️';
+  showBubble(isDay ? 'Good morning! ☀️' : 'Night night~ 🌙');
+});
+
+// ===================== MOOD SYSTEM =====================
 const moods = {
-  happy:   { label: 'happy 😊',    bubble: ['Yay! 🎉', 'Wheee! ✨', 'I love this! 💙', 'Hehe~'] },
-  sad:     { label: 'sad 😢',      bubble: ['Ouch... 😢', 'That hurt!', 'Please be gentle!', 'Why... 💔'] },
-  sleeping:{ label: 'sleeping 😴', bubble: ['Zzz... 💤', '...mmmph...', 'Zzz~'] },
-  angry:   { label: 'angry 😠',    bubble: ['Hey!! 😤', 'STOP IT!', 'I said NO! 🔥', 'Grrrr!'] },
-  curious: { label: 'curious 👀',  bubble: ['Hmm...?', 'What was that?', 'Over there!', '👀'] },
-  excited: { label: 'excited 🤩',  bubble: ['OMG!! 🤩', 'WAHOO! 🎊', 'YES!! 💥', 'WOW WOW WOW!'] },
-  confused:{ label: 'confused 🤔', bubble: ['Huh...?', 'I don\'t get it', 'What? 😵', '...wait'] },
+  happy:     { label: 'happy 😊',    bubble: ['Yay! 🎉', 'Wheee! ✨', 'I love this! 💙', 'Hehe~'] },
+  sad:       { label: 'sad 😢',      bubble: ['Ouch... 😢', 'That hurt!', 'Please be gentle!', 'Why... 💔'] },
+  sleeping:  { label: 'sleeping 😴', bubble: ['Zzz... 💤', '...mmmph...', 'Zzz~'] },
+  angry:     { label: 'angry 😠',    bubble: ['Hey!! 😤', 'STOP IT!', 'I said NO! 🔥', 'Grrrr!'] },
+  curious:   { label: 'curious 👀',  bubble: ['Hmm...?', 'What was that?', 'Over there!', '👀'] },
+  excited:   { label: 'excited 🤩',  bubble: ['OMG!! 🤩', 'WAHOO! 🎊', 'YES!! 💥', 'WOW WOW WOW!'] },
+  confused:  { label: 'confused 🤔', bubble: ['Huh...?', 'I don\'t get it', 'What? 😵', '...wait'] },
+  depressed: { label: 'depressed 💔',bubble: ['...', '🙁', 'nobody cares...'] },
+  walking:   { label: 'walking 🚶',  bubble: ['just walking~', 'la la la 🎵', 'stretching!'] },
 };
 
 function setMood(mood, duration = 2500) {
-  // Remove all mood classes
   Object.keys(moods).forEach(m => bloo.classList.remove(m));
   bloo.classList.add(mood);
   currentMood = mood;
 
   const data = moods[mood];
-  const msg = data.bubble[Math.floor(Math.random()*data.bubble.length)];
-  showBubble(msg);
-  moodLabel.textContent = data.label;
-  moodLabel.style.opacity = '0.7';
+  if (data) {
+    const msg = data.bubble[Math.floor(Math.random()*data.bubble.length)];
+    showBubble(msg);
+    moodLabel.textContent = data.label;
+    moodLabel.style.opacity = '0.7';
+  }
 
   clearTimeout(moodTimer);
-  if (mood !== 'sleeping') {
+  if (mood !== 'sleeping' && mood !== 'depressed' && mood !== 'walking') {
     moodTimer = setTimeout(() => {
       Object.keys(moods).forEach(m => bloo.classList.remove(m));
       currentMood = 'idle';
       moodLabel.style.opacity = '0.3';
       moodLabel.textContent = '· · ·';
     }, duration);
+  }
+
+  // Hide depressed note unless depressed
+  if (mood !== 'depressed') {
+    depressedNote.classList.remove('show');
+  }
+
+  // Stop walking if another mood takes over
+  if (mood !== 'walking') {
+    stopWalking();
   }
 }
 
@@ -533,7 +699,7 @@ function showBubble(text) {
   bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2200);
 }
 
-// --- Particles ---
+// ===================== PARTICLES / RIPPLE =====================
 function spawnParticle(x, y, emoji) {
   const p = document.createElement('div');
   p.className = 'particle';
@@ -543,7 +709,6 @@ function spawnParticle(x, y, emoji) {
   setTimeout(() => p.remove(), 1200);
 }
 
-// --- Ripple ---
 function spawnRipple(x, y) {
   const r = document.createElement('div');
   r.className = 'ripple';
@@ -552,43 +717,131 @@ function spawnRipple(x, y) {
   setTimeout(() => r.remove(), 500);
 }
 
-// --- Eye tracking ---
-document.addEventListener('pointermove', (e) => {
+// ===================== EYE TRACKING =====================
+let eyeTarget = { x: window.innerWidth/2, y: window.innerHeight/2 };
+let eyeMode = 'cursor'; // 'cursor' | 'critter'
+
+function updateEyes(tx, ty) {
   const blooBounds = bloo.getBoundingClientRect();
   const cx = blooBounds.left + blooBounds.width / 2;
   const cy = blooBounds.top + blooBounds.height / 2;
-  const dx = (e.clientX - cx) / window.innerWidth * 8;
-  const dy = (e.clientY - cy) / window.innerHeight * 8;
+  const dx = (tx - cx) / window.innerWidth * 8;
+  const dy = (ty - cy) / window.innerHeight * 8;
   pupils.forEach(p => {
-    p.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    p.style.transform = `translate(calc(-50% + ${Math.max(-7,Math.min(7,dx))}px), calc(-50% + ${Math.max(-6,Math.min(6,dy))}px))`;
   });
-  if (currentMood === 'idle') {
-    // curious look
-    clearTimeout(moodTimer);
-    moodTimer = setTimeout(() => {}, 0);
-  }
+}
+
+document.addEventListener('pointermove', (e) => {
+  isPointerOnScreen = true;
+  eyeMode = 'cursor';
+  eyeTarget = { x: e.clientX, y: e.clientY };
+  updateEyes(e.clientX, e.clientY);
+  lastInteraction = Date.now();
+  resetDepressedTimer();
 });
 
-// --- Tap detection ---
+document.addEventListener('pointerleave', () => {
+  isPointerOnScreen = false;
+  eyeMode = 'critter';
+});
+
+// ===================== DEPRESSED SYSTEM =====================
+function resetDepressedTimer() {
+  clearTimeout(depressedTimer);
+  if (currentMood === 'depressed') {
+    setMood('idle');
+  }
+  depressedTimer = setTimeout(() => {
+    if (currentMood === 'idle' || currentMood === 'confused') {
+      setMood('depressed', 99999);
+      depressedNote.classList.add('show');
+      setTimeout(() => depressedNote.classList.remove('show'), 4000);
+    }
+  }, 15000);
+}
+resetDepressedTimer();
+
+// ===================== WALKING =====================
+let walkAnimFrame = null;
+
+function startWalking() {
+  if (currentMood === 'walking') return;
+  setMood('walking', 99999);
+  walkX = 0;
+  walkDir = Math.random() < 0.5 ? 1 : -1;
+  
+  const scene = document.querySelector('.scene');
+  const maxShift = 80;
+
+  function walkStep() {
+    walkX += walkDir * 1.2;
+    if (Math.abs(walkX) > maxShift) {
+      walkDir *= -1;
+      // flip body
+      scene.style.transform = `translateX(calc(-50% + ${walkX}px)) scaleX(${walkDir > 0 ? 1 : -1})`;
+    } else {
+      scene.style.transform = `translateX(calc(-50% + ${walkX}px))`;
+    }
+    walkAnimFrame = requestAnimationFrame(walkStep);
+  }
+  walkAnimFrame = requestAnimationFrame(walkStep);
+}
+
+function stopWalking() {
+  if (walkAnimFrame) {
+    cancelAnimationFrame(walkAnimFrame);
+    walkAnimFrame = null;
+  }
+  const scene = document.querySelector('.scene');
+  scene.style.transform = 'translateX(-50%)';
+}
+
+// Trigger walking after long idle (different from depressed)
+let walkTriggerTimer = null;
+function scheduleWalk() {
+  clearTimeout(walkTriggerTimer);
+  walkTriggerTimer = setTimeout(() => {
+    if (currentMood === 'idle') {
+      startWalking();
+      setTimeout(() => {
+        if (currentMood === 'walking') {
+          setMood('idle');
+        }
+      }, 5000 + Math.random()*3000);
+    }
+    scheduleWalk();
+  }, 25000 + Math.random()*15000);
+}
+scheduleWalk();
+
+// ===================== TAP DETECTION =====================
 function getZone(x, y) {
   const rect = bloo.getBoundingClientRect();
-  // Relative to bloo center
   const rx = (x - rect.left) / rect.width;
   const ry = (y - rect.top) / rect.height;
   const inside = rx > 0 && rx < 1 && ry > 0.1 && ry < 1;
   if (!inside) return 'outside';
-  if (ry < 0.5) return 'head';   // top half = head
+  if (ry < 0.5) return 'head';
   return 'body';
 }
 
 let lastTap = 0;
-let tapInterval = null;
 let rapidTaps = 0;
 
 bloo.addEventListener('pointerdown', (e) => {
   e.preventDefault();
+  lastInteraction = Date.now();
+  resetDepressedTimer();
+  
   const x = e.clientX, y = e.clientY;
   spawnRipple(x, y);
+
+  if (currentMood === 'walking') {
+    stopWalking();
+    setMood('happy', 2000);
+    return;
+  }
 
   const zone = getZone(x, y);
   const now = Date.now();
@@ -596,8 +849,16 @@ bloo.addEventListener('pointerdown', (e) => {
   lastTap = now;
   if (isRapid) rapidTaps++; else rapidTaps = 0;
 
+  if (currentMood === 'depressed') {
+    // Wake from depression
+    depressedNote.classList.remove('show');
+    setMood('happy', 2500);
+    spawnParticle(x, y-20, '💙');
+    spawnParticle(x+15, y-35, '✨');
+    return;
+  }
+
   if (rapidTaps >= 3) {
-    // Rapid tapping = excited
     setMood('excited', 3000);
     spawnParticle(x, y-20, '🎉');
     spawnParticle(x+20, y-30, '✨');
@@ -607,7 +868,6 @@ bloo.addEventListener('pointerdown', (e) => {
   }
 
   if (zone === 'head') {
-    // Tap on face = sad/angry based on mood
     if (currentMood === 'happy') {
       setMood('angry', 2000);
       spawnParticle(x, y-10, '💢');
@@ -619,7 +879,6 @@ bloo.addEventListener('pointerdown', (e) => {
       spawnParticle(x, y-10, '💔');
     }
   } else if (zone === 'body') {
-    // Belly tap = tickle / happy
     petStreak++;
     if (petStreak >= 3) {
       setMood('excited', 2500);
@@ -630,10 +889,8 @@ bloo.addEventListener('pointerdown', (e) => {
       spawnParticle(x, y-15, '💙');
     }
   } else {
-    // Tap elsewhere = curious
     petStreak = 0;
     setMood('curious', 2000);
-    // Eyes track to tap point
     const blooBounds = bloo.getBoundingClientRect();
     const cx = blooBounds.left + blooBounds.width / 2;
     const cy = blooBounds.top + blooBounds.height / 2;
@@ -658,22 +915,10 @@ bloo.addEventListener('pointerdown', () => {
 bloo.addEventListener('pointerup', () => clearTimeout(longPressTimer));
 bloo.addEventListener('pointerleave', () => clearTimeout(longPressTimer));
 
-// Tap outside = confused (after a delay of no interaction)
-let idleTimer = null;
-document.addEventListener('pointerdown', (e) => {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    if (currentMood === 'idle') {
-      setMood('confused', 2000);
-      spawnParticle(
-        bloo.getBoundingClientRect().left + 70,
-        bloo.getBoundingClientRect().top + 20, '🤔');
-    }
-  }, 8000);
-});
-
 // Wake from sleep on tap
-document.addEventListener('pointerdown', () => {
+document.addEventListener('pointerdown', (e) => {
+  lastInteraction = Date.now();
+  resetDepressedTimer();
   if (currentMood === 'sleeping') {
     setMood('confused', 2000);
   }
@@ -686,7 +931,264 @@ setTimeout(() => {
   moodLabel.style.opacity = '0.5';
 }, 800);
 
-// Telegram setup
+// ===================== CRITTERS =====================
+const critterTypes = [
+  // Ground critters
+  {
+    type: 'ground',
+    render: () => `<svg width="28" height="18" viewBox="0 0 28 18">
+      <ellipse cx="14" cy="12" rx="11" ry="6" fill="#a0c8ff" opacity="0.9"/>
+      <circle cx="6" cy="10" r="3.5" fill="#c0e0ff"/>
+      <circle cx="22" cy="10" r="3.5" fill="#c0e0ff"/>
+      <circle cx="8" cy="8" r="2" fill="#222"/>
+      <circle cx="9" cy="7.2" r="0.7" fill="white"/>
+      <circle cx="20" cy="8" r="2" fill="#222"/>
+      <circle cx="21" cy="7.2" r="0.7" fill="white"/>
+      <line x1="4" y1="14" x2="2" y2="17" stroke="#80a8e0" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="10" y1="16" x2="9" y2="18" stroke="#80a8e0" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="18" y1="16" x2="17" y2="18" stroke="#80a8e0" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="24" y1="14" x2="26" y2="17" stroke="#80a8e0" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    dialogues: ['hiiii!', 'bloo!! 👋', 'nice night~', 'can i stay?', 'hehee 🌟'],
+    blooResponses: ['oh hey! 👀', 'who r u?? 🤔', 'so cute~', 'hi tiny friend!'],
+    transform: ['💫 poof!', '✨ sparkle!', '🌀 spin!'],
+    transformEmoji: '💫'
+  },
+  // Sky critters  
+  {
+    type: 'sky',
+    render: () => `<svg width="24" height="20" viewBox="0 0 24 20">
+      <ellipse cx="12" cy="12" rx="8" ry="5" fill="#ffd0f0" opacity="0.92"/>
+      <ellipse cx="7" cy="9" rx="5" ry="4" fill="#ffe0f8"/>
+      <ellipse cx="17" cy="9" rx="5" ry="4" fill="#ffe0f8"/>
+      <circle cx="9" cy="9" r="1.8" fill="#333"/>
+      <circle cx="9.6" cy="8.4" r="0.6" fill="white"/>
+      <circle cx="15" cy="9" r="1.8" fill="#333"/>
+      <circle cx="15.6" cy="8.4" r="0.6" fill="white"/>
+      <path d="M9 13 Q12 16 15 13" stroke="#e080b0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </svg>`,
+    dialogues: ['wooosh~', 'flying by! 🌸', 'hello below!', 'wheeeee!', 'soft breeze~'],
+    blooResponses: ['woah up there!', 'fly safe! 🌸', 'come back! 💙', 'so high!!'],
+    transform: ['🌸 bloom!', '✨ sparkle!', '🎆 pop!'],
+    transformEmoji: '🌸'
+  },
+  // Ground blob critter
+  {
+    type: 'ground',
+    render: () => `<svg width="22" height="18" viewBox="0 0 22 18">
+      <ellipse cx="11" cy="12" rx="9" ry="6" fill="#b8f0c0" opacity="0.9"/>
+      <circle cx="8" cy="9" r="2.2" fill="#dafde0"/>
+      <circle cx="14" cy="9" r="2.2" fill="#dafde0"/>
+      <circle cx="8.5" cy="8.5" r="1" fill="#222"/>
+      <circle cx="14.5" cy="8.5" r="1" fill="#222"/>
+      <circle cx="9" cy="8.1" r="0.35" fill="white"/>
+      <circle cx="15" cy="8.1" r="0.35" fill="white"/>
+      <path d="M8.5 13 Q11 15 13.5 13" stroke="#60c870" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <line x1="5" y1="15" x2="3" y2="17" stroke="#80d890" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="17" y1="15" x2="19" y2="17" stroke="#80d890" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    dialogues: ['bloop!', 'hewwo~ 🌿', 'found you!', 'blooooo~', '🍀 hi!'],
+    blooResponses: ['green fren! 💚', 'bloop to u too!', 'so tiny!!', 'come here~'],
+    transform: ['🌿 rustle!', '💚 bounce!', '🍀 leaf!'],
+    transformEmoji: '🌿'
+  },
+  // Sky star critter
+  {
+    type: 'sky',
+    render: () => `<svg width="20" height="20" viewBox="0 0 20 20">
+      <polygon points="10,2 11.8,7.5 17.6,7.5 13,11 14.8,16.5 10,13 5.2,16.5 7,11 2.4,7.5 8.2,7.5" fill="#fffaaa" opacity="0.95" stroke="#f0d830" stroke-width="0.5"/>
+      <circle cx="8.5" cy="8.5" r="1.3" fill="#555"/>
+      <circle cx="11.5" cy="8.5" r="1.3" fill="#555"/>
+      <circle cx="9" cy="8.1" r="0.45" fill="white"/>
+      <circle cx="12" cy="8.1" r="0.45" fill="white"/>
+    </svg>`,
+    dialogues: ['twinkle! ⭐', 'stardust~', 'wish on me!', 'shiny shiny!', '✨ hi bloo!'],
+    blooResponses: ['a star!! ⭐', 'so sparkly~', 'make a wish!', 'come closer!'],
+    transform: ['⭐ star!', '✨ shine!', '💛 glow!'],
+    transformEmoji: '⭐'
+  }
+];
+
+let activeCritters = [];
+let critterBubbleEl = null;
+let critterBubbleTimer = null;
+let dialogueCooldown = false;
+
+function createCritterBubble() {
+  if (critterBubbleEl) critterBubbleEl.remove();
+  critterBubbleEl = document.createElement('div');
+  critterBubbleEl.className = 'critter-bubble';
+  document.body.appendChild(critterBubbleEl);
+  return critterBubbleEl;
+}
+
+function showCritterBubble(text, x, y) {
+  const cb = critterBubbleEl || createCritterBubble();
+  cb.textContent = text;
+  cb.style.left = (x - cb.offsetWidth/2) + 'px';
+  cb.style.top = (y - 38) + 'px';
+  cb.classList.add('show');
+  clearTimeout(critterBubbleTimer);
+  critterBubbleTimer = setTimeout(() => cb.classList.remove('show'), 1800);
+}
+
+function spawnCritter() {
+  if (activeCritters.length >= 2) return; // max 2 at once, keep it calm
+
+  const type = critterTypes[Math.floor(Math.random() * critterTypes.length)];
+  const isGround = type.type === 'ground';
+  
+  const el = document.createElement('div');
+  el.className = 'critter';
+  el.innerHTML = type.render();
+
+  // Position
+  const fromRight = Math.random() < 0.5;
+  let startX, endX, yPos;
+
+  if (isGround) {
+    // Walk along shelf
+    yPos = window.innerHeight * 0.64 + Math.random() * (window.innerHeight * 0.15);
+    startX = fromRight ? window.innerWidth + 30 : -40;
+    endX = fromRight ? -60 : window.innerWidth + 60;
+  } else {
+    // Float in sky
+    yPos = 60 + Math.random() * (window.innerHeight * 0.35);
+    startX = fromRight ? window.innerWidth + 30 : -40;
+    endX = fromRight ? -60 : window.innerWidth + 60;
+  }
+
+  el.style.cssText = `left:${startX}px;top:${yPos}px;${!isGround ? 'filter:drop-shadow(0 2px 6px rgba(180,160,255,0.4))' : ''}`;
+  if (fromRight) el.style.transform = 'scaleX(-1)';
+
+  document.body.appendChild(el);
+
+  const critterData = {
+    el, type, x: startX, y: yPos,
+    speed: 0.4 + Math.random() * 0.5,
+    dir: fromRight ? -1 : 1,
+    endX,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleAmp: isGround ? 0 : 6
+  };
+  activeCritters.push(critterData);
+
+  // Tap critter
+  el.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top;
+    
+    // Transform critter
+    const tf = type.transform[Math.floor(Math.random()*type.transform.length)];
+    spawnParticle(cx, cy - 10, type.transformEmoji);
+    spawnParticle(cx + 15, cy - 5, '✨');
+    
+    // Remove critter
+    el.style.transition = 'opacity 0.3s, transform 0.3s';
+    el.style.opacity = '0';
+    el.style.transform = (fromRight ? 'scaleX(-1) ' : '') + 'scale(1.5)';
+    setTimeout(() => {
+      el.remove();
+      activeCritters = activeCritters.filter(c => c !== critterData);
+    }, 350);
+
+    // Show what it became
+    showBubble(tf);
+    
+    // Bloo reaction
+    if (currentMood === 'idle' || currentMood === 'curious') {
+      setMood('excited', 2000);
+    }
+    
+    lastInteraction = Date.now();
+    resetDepressedTimer();
+  });
+
+  return critterData;
+}
+
+// Animate critters
+let lastCritterFrame = 0;
+function animateCritters(ts) {
+  requestAnimationFrame(animateCritters);
+
+  // Update critter positions
+  for (let i = activeCritters.length - 1; i >= 0; i--) {
+    const c = activeCritters[i];
+    c.wobble += 0.04;
+    c.x += c.dir * c.speed;
+    const wobbleY = Math.sin(c.wobble) * c.wobbleAmp;
+    c.el.style.left = c.x + 'px';
+    c.el.style.top = (c.y + wobbleY) + 'px';
+
+    // Remove if off screen
+    if ((c.dir < 0 && c.x < c.endX) || (c.dir > 0 && c.x > c.endX)) {
+      c.el.remove();
+      activeCritters.splice(i, 1);
+    }
+  }
+
+  // Eye tracking: if no cursor, look at closest critter
+  if (!isPointerOnScreen && activeCritters.length > 0 && currentMood !== 'sleeping') {
+    const blooBounds = bloo.getBoundingClientRect();
+    const bcx = blooBounds.left + blooBounds.width/2;
+    const bcy = blooBounds.top + blooBounds.height/2;
+    
+    // Find closest critter
+    let closest = null, minDist = Infinity;
+    activeCritters.forEach(c => {
+      const rect = c.el.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      const dist = Math.hypot(cx - bcx, cy - bcy);
+      if (dist < minDist) { minDist = dist; closest = { x: cx, y: cy, data: c }; }
+    });
+
+    if (closest) {
+      updateEyes(closest.x, closest.y);
+      currentWatchTarget = closest.data;
+
+      // Occasional dialogue
+      if (!dialogueCooldown && Math.random() < 0.003 && currentMood === 'idle') {
+        dialogueCooldown = true;
+        const critterLine = closest.data.type.dialogues[Math.floor(Math.random()*closest.data.type.dialogues.length)];
+        const blooline = closest.data.type.blooResponses[Math.floor(Math.random()*closest.data.type.blooResponses.length)];
+        
+        // Critter speaks first
+        showCritterBubble(critterLine, closest.x, closest.y);
+        
+        // Then bloo responds
+        setTimeout(() => {
+          showBubble(blooline);
+          setMood('curious', 3000);
+        }, 1200);
+        
+        setTimeout(() => { dialogueCooldown = false; }, 8000);
+      }
+    }
+  }
+}
+requestAnimationFrame(animateCritters);
+
+// Schedule critter spawns - spaced out, not too frequent
+function scheduleCritter() {
+  const delay = 18000 + Math.random() * 22000; // 18-40 seconds between critters
+  setTimeout(() => {
+    spawnCritter();
+    scheduleCritter();
+  }, delay);
+}
+// First critter after a while
+setTimeout(() => {
+  spawnCritter();
+  scheduleCritter();
+}, 8000);
+
+// ===================== TELEGRAM =====================
 if (window.Telegram && window.Telegram.WebApp) {
   const tg = window.Telegram.WebApp;
   tg.ready();
