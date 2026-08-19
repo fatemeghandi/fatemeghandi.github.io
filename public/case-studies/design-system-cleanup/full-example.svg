@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#e8e7df"/>
+  <path d="M180 190H1420M180 710H1420" stroke="#171716" stroke-opacity=".72" stroke-width="10"/>
+  <rect x="240" y="280" width="250" height="170" fill="none" stroke="#171716" stroke-opacity=".55" stroke-width="9"/>
+  <rect x="675" y="280" width="250" height="170" fill="none" stroke="#171716" stroke-opacity=".55" stroke-width="9"/>
+  <rect x="1110" y="280" width="250" height="170" fill="none" stroke="#171716" stroke-opacity=".55" stroke-width="9"/>
+  <path d="M365 450V575H1235V450" fill="none" stroke="#171716" stroke-opacity=".32" stroke-width="8"/>
+  <text x="180" y="135" fill="#171716" opacity=".72" font-family="Comic Sans MS, Arial" font-size="58">Design system tokens and components</text>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "name": "portfolio-3d-object",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "export:single": "node tools/build-single-file.mjs",
+    "export:single:embed": "npm run build && node tools/build-single-file.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "vite": "^7.0.0",
+    "three": "^0.178.0"
+  },
+  "devDependencies": {}
+}

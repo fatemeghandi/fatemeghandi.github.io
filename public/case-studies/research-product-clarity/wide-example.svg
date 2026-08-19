@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 780">
+  <rect width="1400" height="780" fill="#e8e7df"/>
+  <path d="M120 210H1280M120 320H1010M120 430H1180M120 540H920" fill="none" stroke="#171716" stroke-opacity=".24" stroke-width="8"/>
+  <path d="M190 620C340 500 520 508 700 586S1060 658 1210 520" fill="none" stroke="#171716" stroke-opacity=".72" stroke-width="12"/>
+  <text x="120" y="130" fill="#171716" opacity=".72" font-family="Comic Sans MS, Arial" font-size="54">Research notes and product direction</text>
+</svg>
