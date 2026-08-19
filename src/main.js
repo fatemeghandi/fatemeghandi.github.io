@@ -177,6 +177,22 @@ function escapeHTML(value = "") {
     .replaceAll("'", "&#39;");
 }
 
+function resolvePublicAsset(src = "") {
+  const value = String(src).trim();
+
+  if (
+    !value ||
+    value.startsWith("http://") ||
+    value.startsWith("https://") ||
+    value.startsWith("data:") ||
+    value.startsWith("blob:")
+  ) {
+    return value;
+  }
+
+  return `${import.meta.env.BASE_URL}${value.replace(/^\.?\//, "")}`;
+}
+
 function displayTextHTML(value = "") {
   return escapeHTML(String(value).replace(/([A-Za-z])-([A-Za-z])/g, "$1\u2011$2"));
 }
@@ -273,7 +289,7 @@ function imageFigureMarkup(image) {
   const variant = image.variant === "half" ? "wide" : image.variant;
   return `
     <figure class="case-detail-media case-detail-media--${variant}">
-      <img src="${escapeHTML(image.src)}" alt="${escapeHTML(image.caption)}" loading="lazy" />
+      <img src="${escapeHTML(resolvePublicAsset(image.src))}" alt="${escapeHTML(image.caption)}" loading="lazy" />
       ${image.caption ? `<figcaption>${escapeHTML(image.caption)}</figcaption>` : ""}
     </figure>
   `;
@@ -552,7 +568,7 @@ app.innerHTML = `
               <div class="case-picture" aria-hidden="true">
                 ${
                   study.cover
-                    ? `<img src="${escapeHTML(study.cover)}" alt="" loading="lazy" />`
+                    ? `<img src="${escapeHTML(resolvePublicAsset(study.cover))}" alt="" loading="lazy" />`
                     : "<span>picture</span>"
                 }
               </div>
@@ -2085,7 +2101,7 @@ function renderCaseDetail(study) {
           study.cover
             ? `
               <figure class="case-detail-media case-detail-media--wide case-detail-cover">
-                <img src="${escapeHTML(study.cover)}" alt="" loading="lazy" />
+                <img src="${escapeHTML(resolvePublicAsset(study.cover))}" alt="" loading="lazy" />
               </figure>
             `
             : ""
